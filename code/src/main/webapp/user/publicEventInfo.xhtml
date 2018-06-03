@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Event info</title>
+        <link rel="shortcut icon" href="../resources/event.png"/>
+    </h:head>
+    <h:body>
+        <ui:include src="menuDialogs.xhtml" />
+        <p:layout fullPage="true">
+            <p:layoutUnit position="west" size="#{CONST.SIZE_MENU_COLUMN}" >
+                <h:outputText value="Detail event"
+                              style="font-size:#{CONST.SIZE_NAME_PAGE};text-align: right"/>
+                <ui:include src="menu.xhtml"/>
+            </p:layoutUnit>
+            <p:layoutUnit position="center"  >
+                <p:layout>
+                    <h:form>
+                        <p:layoutUnit position="center" resizable="true" >
+                            <h:panelGrid columns="2"   width="100%" >
+                                <h:panelGrid columns="2" cellpadding="1" >
+                                    <h3 style="width:200px">Event name</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.eventName}" />
+
+                                    <h3>Owner</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.owner.name}
+                                                   [#{beansPublicEventInfo.specificEvent.owner.email}]" />
+
+                                    <h3>All day</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.allDay}" />
+
+                                    <h3>From</h3>
+                                    <p:outputLabel id="startTime" value="#{beansPublicEventInfo.startEvent}">
+                                        <f:convertDateTime  pattern="#{beansPublicEventInfo.pattern}" 
+                                                            timeZone="#{CONST.TIMEZONE_ITA}" />
+                                    </p:outputLabel>
+
+                                    <h3>To</h3>
+                                    <p:outputLabel id="endTime" value="#{beansPublicEventInfo.endEvent}">
+                                        <f:convertDateTime  pattern="#{beansPublicEventInfo.pattern}"
+                                                            timeZone="#{CONST.TIMEZONE_ITA}"/>
+                                    </p:outputLabel>
+
+                                    <h3>Province</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.location.locationName}" />
+
+                                    <h3>City and address</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.address}" />
+
+                                    <h3>Description</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.description}" />
+
+                                    <p:separator />
+                                    <p:separator />
+
+                                    <h3>Privacy event</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.publicEvent}" />
+
+                                    <h3>Outside</h3>
+                                    <p:outputLabel value="#{beansPublicEventInfo.specificEvent.outside}" />
+
+                                    <h3>Participants</h3>
+                                    <p:dataTable value="#{beansPublicEventInfo.invitedUser}" var="invite" >
+                                        <p:column headerText="Invited" width="10">
+                                            <p:graphicImage  name="#{CONSTREG.USER}" width="20"/> 
+                                        </p:column>
+                                        <p:column headerText="E-mail" width="20">
+                                            <h:outputText value="#{invite.email}" />
+                                        </p:column>
+                                        <p:column headerText="Username" width="15">
+                                            <h:outputText value="#{invite.name}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="east" size="#{CONST.SIZE_WEATHER_COLUMN}">
+                            <p:outputLabel value="Weather forecast for #{beansPublicEventInfo.specificEvent.location.locationName}" style="font-weight: bold"/>
+                            <p:dataTable id="meteoList" var="meteo" 
+                                         emptyMessage="No forecast found for this range of days"
+                                         value="#{beansWeather.getMeteoList(beansPublicEventInfo.specificEvent.location.locationID, 
+                                                  beansPublicEventInfo.specificEvent.startdate,
+                                                  beansPublicEventInfo.specificEvent.enddate)}">
+                                <p:column  width="30">
+                                    <h:outputText value="#{beansConverter.getDateFromLong(meteo.weatherDate)}">
+                                        <f:convertDateTime  pattern="#{CONST.PATTERN_DATA}" 
+                                                            timeZone="#{CONST.TIMEZONE_ITA}" />
+                                    </h:outputText><br/>
+                                    <h:outputText value="Avg temp #{meteo.teamAvg}C" />
+                                </p:column>
+                                <p:column width="12" >
+                                    <p:graphicImage name="#{meteo.iconName}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="south" size="#{CONST.SIZE_ACTION_ROW}" > 
+                            <h:panelGrid columns="2" cellpadding="1" width="100%"  >
+                                <p:commandButton value="Join" action="#{beansPublicEventInfo.joinEvent()}"
+                                                 disabled="#{beansPublicEventInfo.alreadyJoined}" />
+                            </h:panelGrid>
+                        </p:layoutUnit>
+                    </h:form> 
+                </p:layout>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+

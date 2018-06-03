@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Event handler</title>
+        <link rel="shortcut icon" href="../resources/event.png"/>
+    </h:head>
+    <h:body>
+        <ui:include src="menuDialogs.xhtml" />
+        <p:layout fullPage="true">
+            <p:layoutUnit position="west" size="#{CONST.SIZE_MENU_COLUMN}" >
+                <h:outputText value="Event handler"
+                              style="font-size:#{CONST.SIZE_NAME_PAGE};text-align: right"/>
+                <ui:include src="menu.xhtml"/>
+            </p:layoutUnit>
+            <p:layoutUnit position="center"  >
+                <p:layout>
+                    <h:form>
+                        <p:layoutUnit position="center"  >
+                            <h:panelGrid id="gridEventHandler" columns="3" cellpadding="3" width="100%">
+                                <h3 style="width:200px">Event name</h3>
+                                <p:inputText  id="username" required="true" 
+                                              value="#{beansEventHandler.event.eventName}"/>
+                                <p:message for="username" display="icon" />
+
+                                <h3>All day</h3>
+                                <p:selectBooleanButton id="allday" value="#{beansEventHandler.event.allDay}" 
+                                                       onLabel="True" offLabel="False" >
+                                    <p:ajax update="startTime"/>
+                                    <p:ajax update="endTime"/>
+                                </p:selectBooleanButton>
+                                <p:spacer/>
+
+                                <h3>From</h3>
+                                <p:calendar id="startTime"  pattern="#{beansEventHandler.pattern}" 
+                                            value="#{beansEventHandler.startEvent}" 
+                                            timeZone="#{CONST.TIMEZONE_ITA}" required="true"> 
+                                    <p:ajax event="dateSelect" update="endTime,meteoList" />
+                                </p:calendar>
+                                <p:message for="startTime" display="icon" />
+
+                                <h3>To</h3>
+                                <p:calendar id="endTime"  pattern="#{beansEventHandler.pattern}"
+                                            timeZone="#{CONST.TIMEZONE_ITA}" required="true"
+                                            value="#{beansEventHandler.endEvent}"
+                                            mindate="#{beansEventHandler.startEvent}" >
+                                    <p:ajax event="dateSelect" update="meteoList" />
+                                </p:calendar>
+                                <p:message for="endTime" display="icon" />
+
+                                <h3>Province</h3>
+                                <p:selectOneMenu required="true" id="city" var="location" 
+                                                 value="#{beansEventHandler.selectedProvince}" >
+                                    <f:selectItem itemLabel="Select City" itemValue="" noSelectionOption="true" />
+                                    <f:selectItems value="#{beansLocation.provinces}" />
+                                    <p:ajax update="meteoList" />
+                                </p:selectOneMenu>
+                                <p:message for="city" display="icon" />
+
+                                <h3>City and address</h3>
+                                <p:inputText  id="cityAndAddress" value="#{beansEventHandler.event.address}" />
+                                <p:message for="cityAndAddress" display="icon" />
+
+                                <h3>Description</h3>
+                                <p:inputTextarea id="description" rows="3"  required="false"
+                                                 value="#{beansEventHandler.event.description}"  />
+                                <p:spacer/>
+
+                                <p:separator />
+                                <p:separator />
+                                <p:separator />
+
+                                <h3>Privacy event</h3>
+                                <p:selectBooleanButton id="privacy" value="#{beansEventHandler.event.publicEvent}"
+                                                       onLabel="Public" offLabel="Private" style="width:60px" />
+                                <p:spacer/>
+
+                                <h3>Outside event</h3>
+                                <p:selectBooleanButton id="type" value="#{beansEventHandler.event.outside}"
+                                                       onLabel="True" offLabel="False" />
+                                <p:spacer/>
+
+                                <h3>Participants</h3>
+                                <p:dataTable value="#{beansEventHandler.alreadyInvited}"
+                                             var="invite" emptyMessage="No invited">
+                                    <p:column headerText="Invited" width="10">
+                                        <p:graphicImage  name="#{CONSTREG.USER}" width="20"/> 
+                                    </p:column>
+                                    <p:column headerText="E-mail" width="20">
+                                        <h:outputText value="#{invite.email}" />
+                                    </p:column>
+                                    <p:column headerText="Username" width="15">
+                                        <h:outputText value="#{invite.name}"/>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:spacer/>
+
+                                <h3>Add invited</h3>
+                                <p:autoComplete multiple="true" value="#{beansEventHandler.selectedInvites}"
+                                                completeMethod="#{beansEventHandler.completeText}" var="mailUser"
+                                                itemLabel="#{mailUser}" itemValue="#{mailUser}" 
+                                                forceSelection="true" >
+                                    <p:column headerText="Invited" width="10">
+                                        <p:graphicImage  name="#{CONSTREG.USER}" width="20"/> 
+                                    </p:column>
+                                    <p:column headerText="E-mail" >
+                                        <h:outputText value="#{mailUser}" />
+                                    </p:column>
+                                </p:autoComplete>
+                                <p:spacer/>
+                                <p:spacer/>
+                                <p:outputLabel value="Search by E-mail"/>
+
+                            </h:panelGrid>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="east" size="#{CONST.SIZE_WEATHER_COLUMN}" >
+                            <p:outputLabel value="Weather forecast for the chosen city" 
+                                           style="font-weight: bold"/>
+                            <p:dataTable id="meteoList" var="meteo"  emptyMessage="No forecast found for this range of days"
+                                         value="#{beansWeather.getMeteoList(beansEventHandler.longIdFromSelectedProvince, 
+                                                  beansEventHandler.startEvent.time, beansEventHandler.endEvent.time)}">
+                                <p:column  width="30">
+                                    <h:outputText value="#{beansConverter.getDateFromLong(meteo.weatherDate)}">
+                                        <f:convertDateTime  pattern="#{CONST.PATTERN_DATA}" 
+                                                            timeZone="#{CONST.TIMEZONE_ITA}" />
+                                    </h:outputText><br/>
+                                    <h:outputText value="Avg temp #{meteo.teamAvg}C" />
+                                </p:column>
+                                <p:column width="12" >
+                                    <p:graphicImage name="#{meteo.iconName}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="south" size="#{CONST.SIZE_ACTION_ROW}">
+                            <h:panelGrid columns="3" width="50%"  >
+                                <p:commandButton type="reset" value="Reset" />
+                                <p:commandButton 
+                                    update="gridEventHandler" 
+                                    action="#{beansEventHandler.createOrModifyEvent()}"
+                                    value="#{beansEventHandler.msgButtonSave}"/>
+                            </h:panelGrid>
+                        </p:layoutUnit>
+                    </h:form>  
+                </p:layout>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+

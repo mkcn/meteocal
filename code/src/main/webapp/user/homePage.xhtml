@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>MeteoCal</title>
+        <link rel="shortcut icon" href="../resources/event.png"/>
+    </h:head>
+    <h:body>
+        <ui:include src="menuDialogs.xhtml" />
+        <p:layout fullPage="true">
+            <p:layoutUnit position="west" size="#{CONST.SIZE_MENU_COLUMN}" >
+                <h:outputText value="Your Home Page"
+                              style="font-size:#{CONST.SIZE_NAME_PAGE};text-align: right"/>
+                <ui:include src="menu.xhtml"/>
+            </p:layoutUnit>
+            <p:layoutUnit position="center"  >
+                <p:layout >
+                    <p:layoutUnit position="center" resizable="true" >
+                        <h:form>
+                            <h:panelGrid columns="2" >
+                                <p:schedule id="schedule" style="height: 700px; width: 700px;"  
+                                            value="#{beansHomePage.lazyEventModel}"
+                                            widgetVar="myschedule" timeZone="#{CONST.TIMEZONE_ITA}"
+                                            draggable="false" resizable="false">
+                                    <p:ajax event="dateSelect" listener="#{beansHomePage.onDateSelect}"
+                                            update="panelAction"
+                                            oncomplete="PF('eventDialog').show();"/>
+                                    <p:ajax event="eventSelect" listener="#{beansHomePage.onEventSelect}" 
+                                            update="panelAction"
+                                            oncomplete="PF('eventDialog').show();"/>
+                                </p:schedule>
+                                <p:dialog widgetVar="eventDialog" header="Event handler"
+                                          showEffect="clip" hideEffect="clip" resizable="false">
+                                    <h:panelGrid id="panelAction" columns="1" cellpadding="3" >
+                                        <p:commandButton 
+                                            value="Create event on #{beansHomePage.infoDaySelected}" 
+                                            action="#{beansEventHandler.openPageNewEvent()}"
+                                            rendered="#{beansHomePage.oneDateSelected}" style="width: 200px;">
+                                            <f:param name="#{CONST.PAR_DATE}" value="#{beansHomePage.selectedDate}" />
+                                        </p:commandButton>
+                                        <p:commandButton 
+                                            value="Modify/view #{beansHomePage.infoEventSelected}"
+                                            action="#{beansEventHandler.openPageViewEvent()}"
+                                            rendered="#{beansHomePage.isTheOwner and beansHomePage.oneEventSelected}"
+                                            style="width: 200px;" >
+                                            <f:param name="#{CONST.PAR_ID}" value="#{beansHomePage.selectedEvent.id}" />
+                                        </p:commandButton>
+                                        <p:commandButton 
+                                            value="View #{beansHomePage.infoEventSelected}"
+                                            action="#{beansPublicEventInfo.viewEventInfo()}"
+                                            rendered="#{!beansHomePage.isTheOwner and beansHomePage.oneEventSelected }" 
+                                            style="width: 200px;" >
+                                            <f:param name="#{CONST.PAR_ID}" value="#{beansHomePage.selectedEvent.id}" />
+                                        </p:commandButton>
+                                        <p:commandButton 
+                                            value="#{beansHomePage.isTheOwner eq true ? 'Delete' : 'Unjoin'}" 
+                                            style="width: 200px;" 
+                                            rendered="#{beansHomePage.oneEventSelected}"
+                                            action="#{beansEventHandler.deleteEvent()}"
+                                            oncomplete="PF('eventDialog').hide();" >
+                                            <f:param name="#{CONST.PAR_ID}" value="#{beansHomePage.selectedEvent.id}" />
+                                            <p:ajax update="schedule" />
+                                        </p:commandButton>
+                                    </h:panelGrid>
+                                </p:dialog>  
+                            </h:panelGrid>
+                        </h:form>
+                    </p:layoutUnit>
+                    <p:layoutUnit position="east" maxSize="#{CONST.SIZE_WEATHER_COLUMN}" >
+                        <p:outputLabel value=" Weather forecast of my city" style="font-weight: bold" />
+                        <p:dataTable id="meteoList" var="meteo" 
+                                     emptyMessage="No forecast found for this range of days"
+                                     value="#{beansWeather.getMeteoList(beansAccountSetting.user.liveIn.locationID, 
+                                              beansHomePage.today , beansHomePage.todayPlusSevenDay)}">
+                            <p:column>
+                                <h:outputText value="#{beansConverter.getDateFromLong(meteo.weatherDate)}">
+                                    <f:convertDateTime  pattern="#{CONST.PATTERN_DATA}" 
+                                                        timeZone="#{CONST.TIMEZONE_ITA}" />
+                                </h:outputText><br/>
+                                <h:outputText value="Avg temp #{meteo.teamAvg}C" /><br/>
+                            </p:column>
+                            <p:column  >
+                                <p:graphicImage name="#{meteo.iconName}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:layoutUnit>
+                    <p:layoutUnit position="south" maxSize="#{CONST.SIZE_ACTION_ROW}" >
+                        <h:form>
+                            <h:panelGrid columns="2"  >
+                                <p:commandButton 
+                                    value="Create event" 
+                                    action="#{beansEventHandler.openPageNewEventToday()}" />
+                                <h3>or select an event or select a date</h3>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:layoutUnit>
+                </p:layout>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+

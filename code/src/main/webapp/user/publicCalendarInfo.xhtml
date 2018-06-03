@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Public calendar info</title>
+        <link rel="shortcut icon" href="../resources/user.png"/>
+    </h:head>
+    <h:body>
+        <ui:include src="menuDialogs.xhtml" />
+        <p:layout fullPage="true">
+            <p:layoutUnit position="west" size="#{CONST.SIZE_MENU_COLUMN}" >
+                <p:outputLabel value="Calendar of #{beansPublicCalendarInfo.specificUser.name}"
+                               style="font-size:#{CONST.SIZE_NAME_PAGE};text-align: right"/>
+                <ui:include src="menu.xhtml"/>
+            </p:layoutUnit>
+            <p:layoutUnit position="center"  >
+                <p:layout>
+                    <p:layoutUnit position="center"  >
+                        <h:form>
+                            <p:schedule id="schedule" style="height: 700px; width: 700px;"  
+                                        value="#{beansPublicCalendarInfo.lazyEventModel}"
+                                        widgetVar="myschedule" timeZone="#{CONST.TIMEZONE_ITA}"
+                                        draggable="false" resizable="false">
+                                <p:ajax event="eventSelect" listener="#{beansPublicCalendarInfo.onEventSelect}" 
+                                        update="panelAction" oncomplete="PF('eventDialog').show();"/>
+                            </p:schedule>
+                            <p:dialog widgetVar="eventDialog" header="View event"
+                                      showEffect="clip" hideEffect="clip">
+                                <h:panelGrid id="panelAction" columns="1" cellpadding="3" >
+                                    <p:commandButton 
+                                        value="#{beansPublicCalendarInfo.infoEventSelected}"
+                                        action="#{beansPublicEventInfo.viewEventInfo}"
+                                        disabled="#{beansPublicCalendarInfo.APrivateEvent}" style="width: 150px;" >
+                                        <f:param name="#{CONST.PAR_ID}" value="#{beansPublicCalendarInfo.selectedEvent.id}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:dialog>    
+                        </h:form>
+                    </p:layoutUnit>
+                    <p:layoutUnit position="south" maxSize="#{CONST.SIZE_ACTION_ROW}" >
+                        <h:form>
+                            <h3>Select a public event to see more details</h3>
+                        </h:form>
+                    </p:layoutUnit>
+                </p:layout>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+

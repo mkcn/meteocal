@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Menu Page</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:panel header="Main" style="margin-bottom:5px">
+                <h:panelGrid columns="1" cellpadding="3">
+                    <h:outputText value="User name: #{beansAccountSetting.user.name}" />
+                    <h:outputText value="Location: #{beansAccountSetting.user.liveIn.locationName}" />
+                    <p:commandLink action="#{beansLogin.logout()}" value="Logout"/>
+                    <p:separator />
+                    <p:button outcome="#{CONST.HOME_PAGE}" value="MyCalendar" icon="fa-home"/>
+                    <h:panelGrid columns="2" cellpadding="3">
+                        <h:outputText  value="Notifications: " style="font-weight: bold" />
+                        <h:outputText id="notifCounter" value="#{beansNotifications.numNotificationsToRead}" />
+                        <p:poll id="pollNotification" interval="5"  listener="#{beansNotifications.checkNumNotificationsUnSeen()}" 
+                                update="notifCounter" />
+                    </h:panelGrid>
+                    <p:button outcome="#{CONST.NOTIFICATIONS}" 
+                              value="View notifications" icon="ui-icon-star"/>
+                    <p:button outcome="#{CONST.ACCOUNT_SETTING}" 
+                              value="Account setting" icon="fa-user"/>
+                </h:panelGrid>
+            </p:panel>
+
+            <p:panel header="Public" style="margin-bottom:5px">
+                <h:panelGrid columns="1" cellpadding="3">
+                    <p:button outcome="#{CONST.PUBLIC_CALENDARS}" value="Public calendars"/>
+                    <p:button outcome="#{CONST.PUBLIC_EVENTS}" value="Public events" />
+                </h:panelGrid>
+            </p:panel>
+
+            <p:panel header="Other" style="margin-bottom:5px">
+                <h:panelGrid columns="1" cellpadding="3">
+                    <p:commandButton value="Report issue" 
+                                     onclick="PF('issueDialog').show();" />
+                    <p:commandButton value="Share with a friend"
+                                     onclick="PF('shareDialog').show();" />
+                </h:panelGrid>
+            </p:panel>   
+        </h:form>
+    </h:body>
+</html>
+

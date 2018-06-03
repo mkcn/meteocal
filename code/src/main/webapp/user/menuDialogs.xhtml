@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title></title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:dialog header="Report issue" widgetVar="issueDialog" modal="true" fitViewport="true">
+                <h:panelGrid columns="3">
+                    <h:outputLabel  value="E-mail" />
+                    <p:inputText  id="emailAnswer" value="#{beansMail.sender}"
+                                  required="true" />
+                    <p:message for="emailAnswer" display="icon" />
+
+                    <h:outputLabel  value="Description" />
+                    <p:inputTextarea rows="2" id="description" value="#{beansMail.msg}"
+                                     required="true" />
+                    <p:message for="description" display="icon" />
+
+                    <p:commandButton type="reset" value="Reset" />
+                    <p:commandButton id="send1" value="Send" 
+                                     actionListener="#{beansMail.reportAnIssue()}"
+                                     oncomplete="PF('issueDialog').hide();" />
+                </h:panelGrid>
+            </p:dialog> 
+        </h:form>
+        <h:form>
+            <p:dialog header="Share with a friend" widgetVar="shareDialog" modal="true" >
+                <h:panelGrid id="eventDetails" columns="3">
+                    <h:outputLabel  value="E-mail friend" />
+                    <p:inputText id="emailFriend" value="#{beansMail.receiver}" 
+                                 required="true" />
+                    <p:message for="emailFriend" display="icon" />
+
+                    <h:outputLabel  value="Comment" />
+                    <p:inputTextarea rows="2" id="comment" value="#{beansMail.msg}" 
+                                     required="true" />
+                    <p:message for="comment" display="icon" />
+
+                    <p:commandButton type="reset" value="Reset" />
+                    <p:commandButton id="send2" value="Send"  
+                                     actionListener="#{beansMail.sendAShareEMail()}"
+                                     oncomplete="PF('shareDialog').hide();"/>
+                </h:panelGrid>
+            </p:dialog> 
+        </h:form>
+
+        <!--this is called from every page of the user-->
+        <p:growl for="#{CONST.GENERAL_MSG}" id="generalGrowl" showDetail="true"  />
+    </h:body>
+</html>
+

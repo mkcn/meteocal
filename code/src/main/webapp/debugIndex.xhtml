@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>MeteoCal index</title>
+    </h:head>
+    <h:body> 
+        <h:form>
+            <h:link outcome="#{CONST.ACCESS_PAGE}" value="Access page"/><br/>
+            <h:link outcome="#{CONST.FOLDER_USER}#{CONST.HOME_PAGE}" value="Home page"/><br/>
+            <h:link outcome="#{CONST.FOLDER_USER}#{CONST.HOME_PAGE}" value="home 2"/><br/>
+            <h:link outcome="#{CONST.FOLDER_USER}#{CONST.HOME_PAGE_TMP}" value="only menu"/><br/>
+            <h:link outcome="#{CONST.FOLDER_USER}#{CONST.PUBLIC_EVENTS}" value="public events"/><br/>
+            <h:link outcome="#{CONST.FOLDER_USER}#{CONST.PUBLIC_EVENT_INFO}" value="event info"/><br/>
+            <h:link outcome="#{CONST.FOLDER_USER}#{CONST.PUBLIC_CALENDARS}" value="public calendars"/><br/>
+            <h:link outcome="#{CONST.FOLDER_USER}#{CONST.EVENT_HANDLER}" value="event handler"/><br/>
+            <p:commandButton value="Auto login with [a,a]" action="#{beansLogin.loginFast()}" />
+            <p:messages for="loginMsg" showDetail="true" autoUpdate="true" closable="true" />
+        </h:form>
+    </h:body>
+</html>
+

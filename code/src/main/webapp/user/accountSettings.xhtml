@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Account setting</title>
+        <link rel="shortcut icon" href="../resources/user.png"/>
+    </h:head>
+    <h:body>
+        <ui:include src="menuDialogs.xhtml" />
+        <p:layout fullPage="true">
+            <p:layoutUnit position="west" size="#{CONST.SIZE_MENU_COLUMN}" >
+                <h:outputText value="Account setting"
+                          style="font-size:#{CONST.SIZE_NAME_PAGE};text-align: right"/>
+                <ui:include src="menu.xhtml"/>
+            </p:layoutUnit>
+            <p:layoutUnit position="center"  >
+                <p:layout>
+                    <h:form>
+                        <p:layoutUnit position="center" resizable="true" size="95%" >
+                            <h:panelGrid id="gridSetting" columns="3" cellpadding="15">
+                                <h:outputLabel  value="E-mail" />
+                                <h:outputLabel  value="#{beansAccountSetting.user.email}" />
+                                <p:spacer/>
+
+                                <p:separator />
+                                <p:separator />
+                                <p:separator />
+
+                                <h:outputLabel  value="Username" />
+                                <p:inputText  id="username" required="true" value="#{beansAccountSetting.user.name}" />
+                                <p:message for="username" display="icon"/>
+
+                                <h:outputLabel for="pwdNew1" value="New Password: " />
+                                <p:password id="pwdNew1" required="false" 
+                                            match="pwdNew2" value="#{beansAccountSetting.newPassword}"/>
+                                <p:message for="pwdNew1" display="icon"/>
+
+                                <h:outputLabel for="pwdNew2" value="Repeat new password: " />
+                                <p:password id="pwdNew2" />
+                                <p:message for="pwdNew2" display="icon"/>
+
+                                <h:outputLabel for="city" value="Location" />
+                                <p:selectOneMenu required="true" id="city" var="location" 
+                                                 value="#{beansAccountSetting.selectedProvince}" >
+                                    <f:selectItem itemLabel="Select City" itemValue="" noSelectionOption="true" />
+                                    <f:selectItems value="#{beansLocation.provinces}" />
+                                </p:selectOneMenu>
+                                <p:message for="city" display="icon" />
+
+                                <h:outputText value="Privacy calendar" />
+                                <p:selectBooleanButton id="privacy" value="#{beansAccountSetting.user.publicCalendar}"
+                                                       onLabel="Public" offLabel="Private" />
+                                <p:message for="privacy" display="icon" />
+                            </h:panelGrid>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="south">
+                            <h:panelGrid columns="3" cellpadding="1" width="50%"  >
+                                <p:commandButton type="reset" value="Reset" update="gridSetting" />
+                                <p:commandButton value="Save settings"  update="gridSetting"
+                                                 action="#{beansAccountSetting.modifySettingUser()}" />
+                            </h:panelGrid>
+                        </p:layoutUnit>
+                    </h:form>
+                </p:layout>
+            </p:layoutUnit>
+        </p:layout>
+
+    </h:body>
+</html>
+

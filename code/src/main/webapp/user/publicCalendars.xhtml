@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Public calendars</title>
+        <link rel="shortcut icon" href="../resources/user.png"/>
+    </h:head>
+    <h:body>
+        <ui:include src="menuDialogs.xhtml" />
+        <p:layout fullPage="true">
+            <p:layoutUnit position="west" size="#{CONST.SIZE_MENU_COLUMN}" >
+                <h:outputText value="Public calendars"
+                          style="font-size:#{CONST.SIZE_NAME_PAGE};text-align: right"/>
+                <ui:include src="menu.xhtml"/>
+            </p:layoutUnit>
+            <p:layoutUnit position="center"  >
+                <h:form>
+                    <p:dataTable var="users" value="#{beansPublicCals.publicUsers}" widgetVar="userTable"
+                                 emptyMessage="No elements found" paginator="true" rows="#{CONST.NUM_LOAD_LIST}"
+                                 filteredValue="#{beansPublicCals.filteredPublicUsers}">
+
+                        <p:column width="40" >
+                            <p:graphicImage  name="user.png" width="30"/>
+                        </p:column>
+
+                        <p:column headerText="E-mail" filterBy="#{users.email}" 
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{users.email }" />
+                        </p:column>
+
+                        <p:column headerText="Username" filterBy="#{users.name}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{users.name}" />
+                        </p:column>
+                        
+                        <p:column headerText="Location" filterBy="
+                                  #{users.liveIn.locationName.toLowerCase()}" 
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{users.liveIn.locationName}" />
+                        </p:column>
+
+                        <p:column >
+                            <p:commandButton 
+                                value="See this calendar"
+                                action="#{beansPublicCalendarInfo.viewCalendarInfo}" >
+                                <f:param name="#{CONST.PAR_ID}" value="#{users.email}" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+
